@@ -8,8 +8,18 @@
     "Draylar"
   ],
   "contributors": [
+    "Alexander",
     "Birgliss",
-    "foul-fortune-feline"
+    "Cooliosity",
+    "Elis Kvitka",
+    "foul-fortune-feline",
+    "jHz",
+    "Kat",
+    "Nebulae",
+    "Patbox",
+    "SCPRedMage",
+    "unilock",
+    "YuRaNnNzZZ"
   ],
   "license": "CC0-1.0",
   "icon": "assets/gofish/icon.png",
@@ -27,9 +37,8 @@
     "go-fish.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.4",
-    "fabric-api": "*",
-    "minecraft": "~1.20.1",
-    "java": ">=17"
+    "fabricloader": "*",
+    "minecraft": ">=1.20.2",
+    "fabric-api": "*"
   }
 }
