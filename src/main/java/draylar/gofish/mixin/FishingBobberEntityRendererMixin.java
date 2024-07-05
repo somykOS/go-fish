@@ -19,8 +19,8 @@ public class FishingBobberEntityRendererMixin {
 
     private PlayerEntity gofish_owner;
 
-    @Inject(
-            method = "render",
+   /* @Inject(
+            method = "render(Lnet/minecraft/entity/projectile/FishingBobberEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At("HEAD")
     )
     private void storeContext(FishingBobberEntity fishingBobberEntity, float f, float g, MatrixStack matrixStack, VertexConsumerProvider vertexConsumerProvider, int i, CallbackInfo ci) {
@@ -28,7 +28,7 @@ public class FishingBobberEntityRendererMixin {
     }
 
     @ModifyVariable(
-            method = "render",
+            method = "render(Lnet/minecraft/entity/projectile/FishingBobberEntity;FFLnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;I)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getHandSwingProgress(F)F"),
             index = 12
     )
@@ -44,5 +44,5 @@ public class FishingBobberEntityRendererMixin {
         }
 
         return i;
-    }
+    }*/
 }

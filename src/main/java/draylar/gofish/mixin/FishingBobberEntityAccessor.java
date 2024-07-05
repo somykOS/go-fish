@@ -8,16 +8,16 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(FishingBobberEntity.class)
 public interface FishingBobberEntityAccessor {
     @Accessor
-    int getLuckOfTheSeaLevel();
+    int getLuckBonus();
 
     @Mutable
     @Accessor
-    void setLuckOfTheSeaLevel(int luckOfTheSeaLevel);
+    void setLuckBonus(int luckBonus);
 
     @Accessor
-    int getLureLevel();
+    int getWaitTimeReductionTicks();
 
     @Mutable
     @Accessor
-    void setLureLevel(int lureLevel);
+    void setWaitTimeReductionTicks(int ticks);
 }

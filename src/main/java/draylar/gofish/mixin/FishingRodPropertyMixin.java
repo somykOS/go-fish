@@ -73,7 +73,7 @@ public class FishingRodPropertyMixin {
         }
 
         // Check if this rod autosmelts
-        boolean hasDeepfryEnchantment = EnchantmentHelper.getLevel(GoFishEnchantments.DEEPFRY, heldStack) != 0;
+        boolean hasDeepfryEnchantment = EnchantmentHelper.hasAnyEnchantmentsWith(heldStack, GoFishEnchantments.DEEPFRY);
         boolean rodAutosmelts = heldStack.getItem() instanceof ExtendedFishingRodItem && ((ExtendedFishingRodItem) heldStack.getItem()).autosmelts();
         boolean smelts = hasDeepfryEnchantment || rodAutosmelts || smeltBuff;
 
@@ -82,7 +82,7 @@ public class FishingRodPropertyMixin {
         ((SmeltingBobber) bobber).gf_setSmelts(smelts);
         ((ExperienceBobber) bobber).gf_setBaseExperience(1 + bonusExperience);
         FishingBobberEntityAccessor accessor = (FishingBobberEntityAccessor) bobber;
-        accessor.setLureLevel(Math.min((accessor.getLureLevel() + bonusLure),5));
-        accessor.setLuckOfTheSeaLevel(accessor.getLuckOfTheSeaLevel() + bonusLuck);
+        accessor.setWaitTimeReductionTicks(Math.min((accessor.getWaitTimeReductionTicks() + bonusLure),5));
+        accessor.setLuckBonus(accessor.getLuckBonus() + bonusLuck);
     }
 }

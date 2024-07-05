@@ -68,7 +68,7 @@ public record BiomePredicate(List<RegistryKey<Biome>> valid) {
             List<RegistryKey<Biome>> rKeys = new ArrayList<>();
             for (String str : valid) {
                 if (!valid.isEmpty()) {
-                    rKeys.add(RegistryKey.of(RegistryKeys.BIOME, new Identifier(str)));
+                    rKeys.add(RegistryKey.of(RegistryKeys.BIOME, Identifier.of(str)));
                 }
             }
 
@@ -82,7 +82,7 @@ public record BiomePredicate(List<RegistryKey<Biome>> valid) {
 
         public Builder add(String biome) {
             if(!biome.isEmpty()) {
-                valid.add(RegistryKey.of(RegistryKeys.BIOME, new Identifier(biome)));
+                valid.add(RegistryKey.of(RegistryKeys.BIOME, Identifier.of(biome)));
             }
 
             return this;

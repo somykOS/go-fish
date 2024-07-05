@@ -70,14 +70,14 @@ public record BiomeTagPredicate(List<TagKey<Biome>> valid) {
         public Builder setValidByString(List<String> valid) {
             List<TagKey<Biome>> tagKeys = new ArrayList<>();
             for (String str : valid) {
-                tagKeys.add(TagKey.of(RegistryKeys.BIOME, new Identifier(str)));
+                tagKeys.add(TagKey.of(RegistryKeys.BIOME, Identifier.of(str)));
             }
             return setValid(tagKeys);
         }
 
         public Builder add(String tag) {
             if(!tag.isEmpty()) {
-                this.valid.add(TagKey.of(RegistryKeys.BIOME, new Identifier(tag)));
+                this.valid.add(TagKey.of(RegistryKeys.BIOME, Identifier.of(tag)));
             }
 
             return this;

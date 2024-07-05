@@ -49,7 +49,7 @@ public class GoFish implements ModInitializer {
     }
 
     public static Identifier id(String name) {
-        return new Identifier("gofish", name);
+        return Identifier.of("gofish", name);
     }
 
     public void registerBrewingRecipes(BrewingRecipeRegistry.Builder builder) {

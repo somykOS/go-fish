@@ -2,7 +2,7 @@ package draylar.gofish.item;
 
 import draylar.gofish.api.*;
 import draylar.gofish.registry.GoFishEnchantments;
-import net.minecraft.client.item.TooltipType;
+
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
@@ -10,6 +10,8 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.stat.Stats;
@@ -100,13 +102,13 @@ public class ExtendedFishingRodItem extends FishingRodItem {
                 }
 
                 // Check if this rod autosmelts
-                boolean hasDeepfryEnchantment = EnchantmentHelper.getLevel(GoFishEnchantments.DEEPFRY, heldStack) != 0;
+                boolean hasDeepfryEnchantment = EnchantmentHelper.hasAnyEnchantmentsWith(heldStack, GoFishEnchantments.DEEPFRY);
                 boolean rodAutosmelts = heldStack.getItem() instanceof ExtendedFishingRodItem && ((ExtendedFishingRodItem) heldStack.getItem()).autosmelts();
                 boolean smelts = hasDeepfryEnchantment || rodAutosmelts || smeltBuff;
 
                 // Calculate lure and luck
-                int lure = Math.min((EnchantmentHelper.getLure(heldStack) + baseLure + bonusLure),5);
-                int lots = EnchantmentHelper.getLuckOfTheSea(heldStack) + baseLOTS + bonusLuck;
+                int lure = Math.min((int) (EnchantmentHelper.getFishingTimeReduction((ServerWorld) world, heldStack, user) + baseLure + bonusLure), 5);
+                int lots = EnchantmentHelper.getFishingLuckBonus((ServerWorld) world, heldStack, user) + baseLOTS + bonusLuck;
 
                 // Summon bobber with stats
                 FishingBobberEntity bobber = new FishingBobberEntity(user, world, lots, lure);

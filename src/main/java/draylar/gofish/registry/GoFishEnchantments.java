@@ -1,17 +1,17 @@
 package draylar.gofish.registry;
 
 import draylar.gofish.GoFish;
-import draylar.gofish.enchantment.DeepfryEnchantment;
-import net.minecraft.enchantment.Enchantment;
+import net.minecraft.component.ComponentType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
+import net.minecraft.util.Unit;
 
 public class GoFishEnchantments {
 
-    public static final Enchantment DEEPFRY = register("deepfry", new DeepfryEnchantment());
+    public static final ComponentType<Unit> DEEPFRY = register("deepfry", ComponentType.<Unit>builder().codec(Unit.CODEC).build());
 
-    public static Enchantment register(String name, Enchantment enchantment) {
-        return Registry.register(Registries.ENCHANTMENT, GoFish.id(name), enchantment);
+    public static <A, T extends ComponentType<A>> T register(String name, T enchantment) {
+        return Registry.register(Registries.ENCHANTMENT_EFFECT_COMPONENT_TYPE, GoFish.id(name), enchantment);
     }
 
     public static void init() {
