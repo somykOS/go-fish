@@ -21,6 +21,6 @@ public abstract class ParticleManagerMixin {
             at = @At("RETURN")
     )
     private void registerParticles(CallbackInfo ci) {
-        this.registerFactory(GoFishParticles.LAVA_FISHING, FishingParticle.Factory::new);
+        //this.registerFactory(GoFishParticles.LAVA_FISHING, FishingParticle.Factory::new);
     }
 }

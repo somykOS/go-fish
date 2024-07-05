@@ -4,12 +4,15 @@ import draylar.gofish.loot.WeatherCondition;
 import draylar.gofish.loot.biome.MatchBiomeLootCondition;
 import draylar.gofish.loot.moon.FullMoonCondition;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v2.LootTableSource;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
+import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.condition.LocationCheckLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.LocationPredicate;
+import net.minecraft.registry.RegistryKey;
 
 public class GoFishLootHandler {
 
@@ -20,8 +23,8 @@ public class GoFishLootHandler {
     }
 
     private static void registerFishHandler() {
-        LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) -> {
-            if(LootTables.FISHING_FISH_GAMEPLAY.equals(id) && source.isBuiltin() && !hasModifiedFishPool) {
+        LootTableEvents.MODIFY.register((RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source) -> {
+            if(LootTables.FISHING_FISH_GAMEPLAY.equals(key) && source.isBuiltin() && !hasModifiedFishPool) {
                 // Only modify first pool, which SHOULD be the fish pool
                 hasModifiedFishPool = true;
 

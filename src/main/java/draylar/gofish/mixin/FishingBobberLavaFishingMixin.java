@@ -29,6 +29,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
+import static com.ibm.icu.text.PluralRules.Operand.j;
+
 @Mixin(FishingBobberEntity.class)
 public abstract class FishingBobberLavaFishingMixin extends Entity {
 
@@ -73,8 +75,7 @@ public abstract class FishingBobberLavaFishingMixin extends Entity {
         }
 
         if (!getPlayerOwner().isCreative()) {
-            getPlayerOwner().getStackInHand(Hand.MAIN_HAND).damage(5, getPlayerOwner(),
-                    player -> player.sendEquipmentBreakStatus(EquipmentSlot.MAINHAND));
+            getPlayerOwner().getStackInHand(Hand.MAIN_HAND).damage(5, getPlayerOwner(), EquipmentSlot.MAINHAND);
         }
 
         if (getWorld() instanceof ServerWorld) {
@@ -98,12 +99,12 @@ public abstract class FishingBobberLavaFishingMixin extends Entity {
         return !fluid.isEmpty();
     }
 
-    @Inject(
+    /*@Inject(
             method = "tickFishingLogic",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void fishingLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, float f, float g, float h, double d, double e, double j, BlockState blockState) {
+    private void fishingLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, BlockPos blockPos, float f, float g, float h, double d, double e, double j, BlockState blockState) {
         if (!blockState.isOf(Blocks.LAVA)) {
             return;
         }
@@ -122,11 +123,11 @@ public abstract class FishingBobberLavaFishingMixin extends Entity {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 1),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private void fishSecondaryLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, float f, float g, float h, double d, double e, double j, BlockState blockState) {
+    private void fishSecondaryLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, BlockPos blockPos, float f, float g, float h, double d, double e, double j, BlockState blockState) {
         if (blockState.isOf(Blocks.LAVA)) {
             serverWorld.spawnParticles(ParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 2 + this.random.nextInt(2), 0.10000000149011612D, 0.0D, 0.10000000149011612D, 0.0D);
         }
-    }
+    }*/
 
     @Redirect(
             method = "getPositionType(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/projectile/FishingBobberEntity$PositionType;",

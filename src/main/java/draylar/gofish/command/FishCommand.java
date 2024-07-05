@@ -56,11 +56,11 @@ public class FishCommand {
         LootTable table;
         final DimensionType dimension = world.getDimension();
         if(dimension.ultrawarm()) {
-            table = world.getServer().getLootManager().getLootTable(GoFishLootTables.NETHER_FISHING);
+            table = world.getServer().getReloadableRegistries().getLootTable(GoFishLootTables.NETHER_FISHING);
         } else if (!dimension.bedWorks()) {
-            table = world.getServer().getLootManager().getLootTable(GoFishLootTables.END_FISHING);
+            table = world.getServer().getReloadableRegistries().getLootTable(GoFishLootTables.END_FISHING);
         } else {
-            table = world.getServer().getLootManager().getLootTable(LootTables.FISHING_GAMEPLAY);
+            table = world.getServer().getReloadableRegistries().getLootTable(LootTables.FISHING_GAMEPLAY);
         }
 
         for(int z = 0; z < times; z++){

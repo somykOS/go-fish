@@ -2,6 +2,7 @@ package draylar.gofish.loot.biome;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import draylar.gofish.registry.GoFishLoot;
 import net.minecraft.loot.condition.LootCondition;
@@ -21,10 +22,10 @@ import java.util.*;
 
 public record MatchBiomeLootCondition(Optional<BiomeTagPredicate> category, Optional<BiomePredicate> biome) implements LootCondition {
 
-    public static final Codec<MatchBiomeLootCondition> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<MatchBiomeLootCondition> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                            Codecs.createStrictOptionalFieldCodec(BiomeTagPredicate.CODEC, "category").forGetter(MatchBiomeLootCondition::category),
-                            Codecs.createStrictOptionalFieldCodec(BiomePredicate.CODEC, "biome").forGetter(MatchBiomeLootCondition::biome)
+                            BiomeTagPredicate.CODEC.optionalFieldOf("category").forGetter(MatchBiomeLootCondition::category),
+                           BiomePredicate.CODEC.optionalFieldOf("biome").forGetter(MatchBiomeLootCondition::biome)
                     )
                     .apply(instance, MatchBiomeLootCondition::new)
     );

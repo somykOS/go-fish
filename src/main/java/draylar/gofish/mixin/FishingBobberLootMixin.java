@@ -8,17 +8,16 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootManager;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.util.Identifier;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
@@ -32,21 +31,21 @@ public abstract class FishingBobberLootMixin extends Entity {
         super(type, world);
     }
 
-    @Redirect(
+    @ModifyArg(
             method = "use",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/loot/LootManager;getLootTable(Lnet/minecraft/util/Identifier;)Lnet/minecraft/loot/LootTable;"))
-    private LootTable getTable(LootManager lootManager, Identifier id) {
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/registry/ReloadableRegistries$Lookup;getLootTable(Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/loot/LootTable;"))
+    private RegistryKey<LootTable> getTable(RegistryKey<LootTable> key) {
         assert getWorld().getServer() != null;
 
         final DimensionType dimension = getWorld().getDimension();
         if(dimension.ultrawarm()) {
-            return this.getWorld().getServer().getLootManager().getLootTable(GoFishLootTables.NETHER_FISHING);
+            return GoFishLootTables.NETHER_FISHING;
         } else if (!dimension.bedWorks()) {
-            return this.getWorld().getServer().getLootManager().getLootTable(GoFishLootTables.END_FISHING);
+            return GoFishLootTables.END_FISHING;
         }
 
         // Default
-        return this.getWorld().getServer().getLootManager().getLootTable(LootTables.FISHING_GAMEPLAY);
+        return LootTables.FISHING_GAMEPLAY;
     }
 
     @Inject(

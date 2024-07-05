@@ -4,7 +4,6 @@ import draylar.gofish.GoFish;
 import draylar.gofish.block.AstralCrateBlock;
 import draylar.gofish.block.CrateBlock;
 import draylar.gofish.item.CrateItem;
-import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.block.Block;
@@ -34,7 +33,7 @@ public class GoFishBlocks {
     //   Special: mid-level enchanted book, emerald, more materials
     //   Weapons: damaged crossbows, arrows, bows, stone tools
     //   Fish: all types of vanilla fish
-    public static Block IRON_CRATE = registerCrate("iron_crate", new CrateBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)), new FabricItemSettings().maxCount(8), GoFish.id("gameplay/fishing/iron_crate"));
+    public static Block IRON_CRATE = registerCrate("iron_crate", new CrateBlock(FabricBlockSettings.copyOf(Blocks.IRON_BLOCK)), new Item.Settings().maxCount(8), GoFish.id("gameplay/fishing/iron_crate"));
 
     // The Gold Crate is a rare crate that drops gold items and materials.
     public static Block GOLDEN_CRATE = registerCrate("golden_crate", new CrateBlock(FabricBlockSettings.copyOf(Blocks.GOLD_BLOCK)), new Item.Settings().maxCount(8).rarity(Rarity.UNCOMMON), GoFish.id("gameplay/fishing/golden_crate"));

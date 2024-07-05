@@ -18,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public abstract class FishingBobberFireproofMixin extends Entity implements FireproofEntity {
 
     @Unique
-    private static final TrackedData<Boolean> GF_FIRE_IMMUNE = DataTracker.registerData(FishingBobberEntity.class, TrackedDataHandlerRegistry.BOOLEAN);
+    private boolean fireproof = false;
 
     private FishingBobberFireproofMixin(EntityType<?> type, World world) {
         super(type, world);
@@ -28,13 +28,12 @@ public abstract class FishingBobberFireproofMixin extends Entity implements Fire
             method = "initDataTracker",
             at = @At("RETURN"))
     private void registerFireImmuneTracker(CallbackInfo ci) {
-        dataTracker.startTracking(GF_FIRE_IMMUNE, false);
     }
 
     // todo: inject into super instead
     @Override
     public boolean isOnFire() {
-        if(dataTracker.get(GF_FIRE_IMMUNE)) {
+        if(this.fireproof) {
             return false;
         }
 
@@ -43,11 +42,11 @@ public abstract class FishingBobberFireproofMixin extends Entity implements Fire
 
     @Override
     public boolean gf_isFireproof() {
-        return dataTracker.get(GF_FIRE_IMMUNE);
+        return this.fireproof;
     }
 
     @Override
     public void gf_setFireproof(boolean value) {
-        dataTracker.set(GF_FIRE_IMMUNE, value);
+        this.fireproof = value;
     }
 }

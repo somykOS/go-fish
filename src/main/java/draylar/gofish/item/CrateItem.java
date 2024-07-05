@@ -3,15 +3,18 @@ package draylar.gofish.item;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.Block;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.LootTables;
 import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.loot.context.LootContextParameters;
 import net.minecraft.loot.context.LootContextTypes;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.*;
@@ -24,16 +27,16 @@ import java.util.Objects;
 
 public class CrateItem extends BlockItem {
 
-    private final Identifier loot;
+    private final RegistryKey<LootTable> loot;
 
     public CrateItem(Block block, Settings settings) {
         super(block, settings);
-        loot = new Identifier("minecraft", "chests/pillager_outpost");
+        loot = LootTables.PILLAGER_OUTPOST_CHEST;
     }
 
     public CrateItem(Block block, Settings settings, Identifier loot) {
         super(block, settings);
-        this.loot = loot;
+        this.loot = RegistryKey.of(RegistryKeys.LOOT_TABLE, loot);
     }
 
     @Override
@@ -75,12 +78,12 @@ public class CrateItem extends BlockItem {
      * @param identifier loot table Identifier
      * @return list of drops generated from the loot table
      */
-    private List<ItemStack> getDrops(ServerWorld world, Identifier identifier, Vec3d pos) {
+    private List<ItemStack> getDrops(ServerWorld world, RegistryKey<LootTable> identifier, Vec3d pos) {
         List<ItemStack> output = new ArrayList<>();
 
         if (world != null && !world.isClient) {
             // set up loot objects
-            LootTable supplier = Objects.requireNonNull(world.getServer()).getLootManager().getLootTable(identifier);
+            LootTable supplier = Objects.requireNonNull(world.getServer()).getReloadableRegistries().getLootTable(identifier);
             LootContextParameterSet.Builder builder =
                     new LootContextParameterSet.Builder(world)
                             .add(LootContextParameters.ORIGIN, pos);
@@ -94,9 +97,8 @@ public class CrateItem extends BlockItem {
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
         tooltip.add(Text.translatable("gofish.crate_tooltip").formatted(Formatting.GRAY).formatted(Formatting.ITALIC));
     }
 }

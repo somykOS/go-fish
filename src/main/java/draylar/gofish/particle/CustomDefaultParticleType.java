@@ -1,10 +1,10 @@
 package draylar.gofish.particle;
 
-import net.minecraft.particle.DefaultParticleType;
+//import net.minecraft.particle.DefaultParticleType;
 
-public class CustomDefaultParticleType extends DefaultParticleType {
+public class CustomDefaultParticleType /*extends DefaultParticleType*/ {
 
-    public CustomDefaultParticleType(boolean alwaysShow) {
-        super(alwaysShow);
-    }
+    //public CustomDefaultParticleType(boolean alwaysShow) {
+    //    super(alwaysShow);
+    //}
 }

@@ -4,6 +4,7 @@ import draylar.gofish.command.FishCommand;
 import draylar.gofish.registry.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
+import net.fabricmc.fabric.api.registry.FabricBrewingRecipeRegistryBuilder;
 import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -43,17 +44,18 @@ public class GoFish implements ModInitializer {
         FuelRegistry.INSTANCE.add(GoFishItems.OAKFISH, 300); // same time as coal
         FuelRegistry.INSTANCE.add(GoFishItems.CHARFISH, 1600); // same time as coal
 
-        registerBrewingRecipes();
+
+        FabricBrewingRecipeRegistryBuilder.BUILD.register(this::registerBrewingRecipes);
     }
 
     public static Identifier id(String name) {
         return new Identifier("gofish", name);
     }
 
-    public static void registerBrewingRecipes() {
-        BrewingRecipeRegistry.registerPotionRecipe(Potions.AWKWARD, GoFishItems.CLOUDY_CRAB, Potions.SLOW_FALLING);
-        BrewingRecipeRegistry.registerPotionRecipe(Potions.AWKWARD, GoFishItems.CHARFISH, Potions.WEAKNESS);
-        BrewingRecipeRegistry.registerPotionRecipe(Potions.AWKWARD, GoFishItems.RAINY_BASS, Potions.WATER_BREATHING);
-        BrewingRecipeRegistry.registerPotionRecipe(Potions.AWKWARD, GoFishItems.MAGMA_COD, Potions.FIRE_RESISTANCE);
+    public void registerBrewingRecipes(BrewingRecipeRegistry.Builder builder) {
+        builder.registerPotionRecipe(Potions.AWKWARD, GoFishItems.CLOUDY_CRAB, Potions.SLOW_FALLING);
+        builder.registerPotionRecipe(Potions.AWKWARD, GoFishItems.CHARFISH, Potions.WEAKNESS);
+        builder.registerPotionRecipe(Potions.AWKWARD, GoFishItems.RAINY_BASS, Potions.WATER_BREATHING);
+        builder.registerPotionRecipe(Potions.AWKWARD, GoFishItems.MAGMA_COD, Potions.FIRE_RESISTANCE);
     }
 }

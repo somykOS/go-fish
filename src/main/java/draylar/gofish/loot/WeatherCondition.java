@@ -2,6 +2,7 @@ package draylar.gofish.loot;
 
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import draylar.gofish.registry.GoFishLoot;
 import net.minecraft.entity.Entity;
@@ -21,11 +22,11 @@ import java.util.Set;
 
 public record WeatherCondition(Optional<Boolean> raining, Optional<Boolean> thundering, Optional<Boolean> snowing) implements LootCondition {
 
-    public static final Codec<WeatherCondition> CODEC = RecordCodecBuilder.create(
+    public static final MapCodec<WeatherCondition> CODEC = RecordCodecBuilder.mapCodec(
             instance -> instance.group(
-                            Codecs.createStrictOptionalFieldCodec(Codec.BOOL, "raining").forGetter(WeatherCondition::raining),
-                            Codecs.createStrictOptionalFieldCodec(Codec.BOOL, "thundering").forGetter(WeatherCondition::thundering),
-                            Codecs.createStrictOptionalFieldCodec(Codec.BOOL, "snowing").forGetter(WeatherCondition::snowing)
+                            Codec.BOOL.optionalFieldOf("raining").forGetter(WeatherCondition::raining),
+                            Codec.BOOL.optionalFieldOf("thundering").forGetter(WeatherCondition::thundering),
+                            Codec.BOOL.optionalFieldOf("snowing").forGetter(WeatherCondition::snowing)
                     )
                     .apply(instance, WeatherCondition::new)
     );

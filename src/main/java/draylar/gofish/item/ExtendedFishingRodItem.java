@@ -2,8 +2,9 @@ package draylar.gofish.item;
 
 import draylar.gofish.api.*;
 import draylar.gofish.registry.GoFishEnchantments;
-import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.item.FishingRodItem;
@@ -59,7 +60,7 @@ public class ExtendedFishingRodItem extends FishingRodItem {
             // Retrieve fishing bobber and damage Fishing Rod
             if(!world.isClient) {
                 int damage = user.fishHook.use(heldStack);
-                heldStack.damage(damage, user, player -> player.sendToolBreakStatus(hand));
+                heldStack.damage(damage, user, hand == Hand.MAIN_HAND ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND);
             }
 
             world.playSound(null, user.getX(), user.getY(), user.getZ(), retrieve.getSound(), SoundCategory.NEUTRAL, retrieve.getVolume(random), retrieve.getPitch(random));
@@ -132,8 +133,8 @@ public class ExtendedFishingRodItem extends FishingRodItem {
     }
 
     @Override
-    public void appendTooltip(ItemStack stack, World world, List<Text> tooltip, TooltipContext context) {
-        super.appendTooltip(stack, world, tooltip, context);
+    public void appendTooltip(ItemStack stack, TooltipContext context, List<Text> tooltip, TooltipType type) {
+        super.appendTooltip(stack, context, tooltip, type);
 
         if(lines > 0) {
             for (int i = 1; i <= lines; i++) {

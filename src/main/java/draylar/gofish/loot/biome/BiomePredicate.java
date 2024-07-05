@@ -44,11 +44,11 @@ public record BiomePredicate(List<RegistryKey<Biome>> valid) {
     }
 
     public JsonElement toJson() {
-        return Util.getResult(CODEC.encodeStart(JsonOps.INSTANCE, this), IllegalStateException::new);
+        return CODEC.encodeStart(JsonOps.INSTANCE, this).getOrThrow(IllegalStateException::new);
     }
 
     public static BiomePredicate fromJson(JsonElement json) {
-        return Util.getResult(CODEC.parse(JsonOps.INSTANCE, json), JsonParseException::new);
+        return CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(IllegalStateException::new);
     }
 
     public static class Builder {
