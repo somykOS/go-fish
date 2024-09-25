@@ -5,7 +5,6 @@
   "mixins": [
     "FishingBobberAutosmeltMixin",
     "FishingBobberEntityAccessor",
-    "FishingBobberEntityRendererMixin",
     "FishingBobberExperienceMixin",
     "FishingBobberFireproofMixin",
     "FishingBobberLavaFishingMixin",
@@ -13,10 +12,12 @@
     "FishingBobberValidityMixin",
     "FishingHookPredicateMixin",
     "FishingRodPropertyMixin",
-    "ItemEntityFireproofMixin",
-    "ParticleManagerMixin"
+    "ItemEntityFireproofMixin"
   ],
-  "client": [],
+  "client": [
+    "client.ParticleManagerMixin",
+    "client.FishingBobberEntityRendererMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   }

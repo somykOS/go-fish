@@ -1,5 +1,6 @@
 package draylar.gofish.registry;
 
+import draylar.gofish.impl.GoFishLootTables;
 import draylar.gofish.loot.WeatherCondition;
 import draylar.gofish.loot.biome.MatchBiomeLootCondition;
 import draylar.gofish.loot.moon.FullMoonCondition;
@@ -8,27 +9,53 @@ import net.fabricmc.fabric.api.loot.v2.LootTableSource;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalBiomeTags;
 import net.minecraft.loot.LootTable;
 import net.minecraft.loot.LootTables;
+import net.minecraft.loot.condition.EntityPropertiesLootCondition;
 import net.minecraft.loot.condition.LocationCheckLootCondition;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
+import net.minecraft.loot.entry.LootTableEntry;
 import net.minecraft.predicate.NumberRange;
+import net.minecraft.predicate.entity.EntityPredicate;
+import net.minecraft.predicate.entity.FishingHookPredicate;
 import net.minecraft.predicate.entity.LocationPredicate;
 import net.minecraft.registry.RegistryKey;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class GoFishLootHandler {
-
-    private static boolean hasModifiedFishPool = false;
-
     public static void init() {
         registerFishHandler();
     }
 
     private static void registerFishHandler() {
         LootTableEvents.MODIFY.register((RegistryKey<LootTable> key, LootTable.Builder tableBuilder, LootTableSource source) -> {
-            if(LootTables.FISHING_FISH_GAMEPLAY.equals(key) && source.isBuiltin() && !hasModifiedFishPool) {
-                // Only modify first pool, which SHOULD be the fish pool
-                hasModifiedFishPool = true;
-
+            if(LootTables.FISHING_GAMEPLAY.equals(key) && source.isBuiltin()) {
+                var canModify = new MutableBoolean(true);
                 tableBuilder.modifyPools(lpb -> {
+                    if (canModify.booleanValue()) {
+                        canModify.setFalse();
+                    } else {
+                        return;
+                    }
+                    lpb.with(LootTableEntry.builder(GoFishLootTables.CRATES)
+                            .weight(5)
+                            .quality(2)
+                            .conditionally(
+                                    EntityPropertiesLootCondition.builder(
+                                            LootContext.EntityTarget.THIS,
+                                            EntityPredicate.Builder.create().typeSpecific(FishingHookPredicate.of(true))
+                                    )
+                            )
+                    );
+                });
+            } else if(LootTables.FISHING_FISH_GAMEPLAY.equals(key) && source.isBuiltin()) {
+                var canModify = new MutableBoolean(true);
+                tableBuilder.modifyPools(lpb -> {
+                    if (canModify.booleanValue()) {
+                        canModify.setFalse();
+                    } else {
+                        return;
+                    }
                     // The default fish loot table has a total weight of 100.
                     // An entry with a weight of 10 represents a 10% chance to get that fish compared to the standard 4, but the percentage goes down as more custom fish are added.
                     // In most situations, only 1-2 fish are added per biome or area, so the chance for that fish is still ~5-10%.

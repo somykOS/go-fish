@@ -1,4 +1,4 @@
-package draylar.gofish.mixin;
+package draylar.gofish.mixin.client;
 
 import draylar.gofish.registry.GoFishParticles;
 import net.minecraft.client.particle.FishingParticle;
@@ -21,6 +21,6 @@ public abstract class ParticleManagerMixin {
             at = @At("RETURN")
     )
     private void registerParticles(CallbackInfo ci) {
-        //this.registerFactory(GoFishParticles.LAVA_FISHING, FishingParticle.Factory::new);
+        this.registerFactory(GoFishParticles.LAVA_FISHING, FishingParticle.Factory::new);
     }
 }

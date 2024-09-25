@@ -1,7 +1,11 @@
 package draylar.gofish.mixin;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
+import com.llamalad7.mixinextras.sugar.Local;
 import draylar.gofish.item.ExtendedFishingRodItem;
 import draylar.gofish.registry.GoFishParticles;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -12,6 +16,7 @@ import net.minecraft.entity.projectile.FishingBobberEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.registry.tag.TagKey;
@@ -22,21 +27,13 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-
-import static com.ibm.icu.text.PluralRules.Operand.j;
+import org.spongepowered.asm.mixin.injection.*;
 
 @Mixin(FishingBobberEntity.class)
 public abstract class FishingBobberLavaFishingMixin extends Entity {
 
     @Shadow public abstract PlayerEntity getPlayerOwner();
     @Shadow public abstract void remove(Entity.RemovalReason reason);
-
     private FishingBobberLavaFishingMixin(EntityType<?> type, World world) {
         super(type, world);
     }
@@ -91,49 +88,36 @@ public abstract class FishingBobberLavaFishingMixin extends Entity {
     // Original check is used to determine whether the bobber should free-fall.
     // Bobbers shouldn't free-fall through liquid anyways, so we return true for all liquids.
     // note that the original method call is inversed so we also inverse ours
-    @Redirect(
+    @WrapOperation(
             method = "tick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z", ordinal = 1)
     )
-    private boolean fallOutsideLiquid(FluidState fluid, TagKey<Fluid> tag) {
-        return !fluid.isEmpty();
+    private boolean fallOutsideLiquid(FluidState instance, TagKey<Fluid> tag, Operation<Boolean> original) {
+        return !instance.isIn(FluidTags.LAVA) && original.call(instance, tag);
     }
 
-    /*@Inject(
-            method = "tickFishingLogic",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 0),
-            locals = LocalCapture.CAPTURE_FAILHARD
-    )
-    private void fishingLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, BlockPos blockPos, float f, float g, float h, double d, double e, double j, BlockState blockState) {
-        if (!blockState.isOf(Blocks.LAVA)) {
-            return;
-        }
-        if (this.random.nextFloat() < 0.15F) {
-            serverWorld.spawnParticles(ParticleTypes.LAVA, d, e - 0.1D, j, 1, g, 0.1D, h, 0.0D);
-        }
-
-        float dZ = f * 0.04F;
-        float dX = h * 0.04F;
-        serverWorld.spawnParticles(GoFishParticles.LAVA_FISHING, d, e, j, 0, dX, 0.01D, (-dZ), 1.0D);
-        serverWorld.spawnParticles(GoFishParticles.LAVA_FISHING, d, e, j, 0, (-dX), 0.01D, dZ, 1.0D);
+    @WrapOperation(method = "tickFishingLogic", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))
+    private boolean replaceLava(BlockState instance, Block block, Operation<Boolean> original) {
+        return original.call(instance, block) || instance.isOf(Blocks.LAVA);
     }
 
-    @Inject(
-            method = "tickFishingLogic",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 1),
-            locals = LocalCapture.CAPTURE_FAILHARD
-    )
-    private void fishSecondaryLavaParticles(BlockPos pos, CallbackInfo ci, ServerWorld serverWorld, int i, BlockPos blockPos, float f, float g, float h, double d, double e, double j, BlockState blockState) {
-        if (blockState.isOf(Blocks.LAVA)) {
-            serverWorld.spawnParticles(ParticleTypes.LAVA, pos.getX(), pos.getY(), pos.getZ(), 2 + this.random.nextInt(2), 0.10000000149011612D, 0.0D, 0.10000000149011612D, 0.0D);
+    @ModifyArg(method = "tickFishingLogic", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnParticles(Lnet/minecraft/particle/ParticleEffect;DDDIDDDD)I"))
+    private ParticleEffect replaceLavaParticle(ParticleEffect particle, @Local BlockState state) {
+        if (state.getFluidState().isIn(FluidTags.LAVA)) {
+            if (particle == ParticleTypes.FISHING) {
+                return GoFishParticles.LAVA_FISHING;
+            } else {
+                return ParticleTypes.LAVA;
+            }
         }
-    }*/
+        return particle;
+    }
 
-    @Redirect(
+    @WrapOperation(
             method = "getPositionType(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/entity/projectile/FishingBobberEntity$PositionType;",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/fluid/FluidState;isIn(Lnet/minecraft/registry/tag/TagKey;)Z")
     )
-    private boolean isInValidLiquid(FluidState fluidState, TagKey<Fluid> tag) {
-        return !fluidState.isEmpty();
+    private boolean isInValidLiquid(FluidState instance, TagKey<Fluid> tag, Operation<Boolean> original) {
+        return instance.isIn(FluidTags.LAVA) || original.call(instance, tag);
     }
 }
