@@ -114,10 +114,10 @@ public class GoFishLootHandler {
                             .weight(50)
                             .conditionally(MatchFishingRodCondition.builder(GoFish.id("skeletal_rod")))
                             .build());
-                    lpb.with(ItemEntry.builder(Registries.ITEM.get(Identifier.of("bartefacts:ancient_bones")))
-                            .weight(10)
-                            .conditionally(MatchFishingRodCondition.builder(GoFish.id("skeletal_rod")))
-                            .build());
+//                    lpb.with(ItemEntry.builder(Registries.ITEM.get(Identifier.of("bartefacts:ancient_bones")))
+//                            .weight(10)
+//                            .conditionally(MatchFishingRodCondition.builder(GoFish.id("skeletal_rod")))
+//                            .build());
                 });
             }
         });

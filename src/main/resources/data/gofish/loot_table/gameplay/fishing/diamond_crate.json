@@ -244,10 +244,14 @@
           "name": "minecraft:enchanted_book",
           "functions": [
             {
-              "function": "enchant_randomly",
-              "enchantments": [
-                "soul_speed"
-              ]
+              "function": "minecraft:set_components",
+              "components": {
+                "minecraft:stored_enchantments": {
+                  "levels": {
+                    "minecraft:mending": 1
+                  }
+                }
+              }
             }
           ]
         }
